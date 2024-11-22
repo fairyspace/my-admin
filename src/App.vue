@@ -1,15 +1,13 @@
 <script setup lang="ts">
 const str = 'hello world'
 
-for (let i = 0; i < 10; i++)
-{
+for (let i = 0; i < 10; i++) {
   console.log(i)
 }
 </script>
 
 <template>
   <div class="box">
-
     <h1>App根组件</h1>
   </div>
 </template>
