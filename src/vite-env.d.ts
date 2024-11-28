@@ -2,5 +2,4 @@
   const classes: { [key: string]: string };
   export default classes;
 }*/
-declare module 'virtual:svg-icons-register';
-
+declare module 'virtual:svg-icons-register'

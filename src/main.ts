@@ -5,9 +5,9 @@ import App from './App.vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import 'virtual:svg-icons-register'
 import 'element-plus/dist/index.css'
-import SvgIcon from '@/components/SvgIcon/index.vue'
+import globalComponents from '@/components'
 
 const app = createApp(App)
-app.component('SvgIcon', SvgIcon)
+app.use(globalComponents)
 app.use(ElementPlus, { locale: zhCn })
 app.mount('#app')
