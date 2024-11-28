@@ -1,23 +1,5 @@
-<script setup lang="ts">
-for (let i = 0; i < 10; i++) {
-  console.log(i)
-}
-</script>
-
+<script setup lang="ts"></script>
 <template>
-  <div class="box">
-    <h1>App根组件</h1>
-  </div>
+  <SvgIcon color="blue" width="30px" height="30px" name="phone"></SvgIcon>
 </template>
-
-<style scoped lang="scss">
-.box {
-  width: 600px;
-  height: 400px;
-  background: aqua;
-
-  h1 {
-    color: white;
-  }
-}
-</style>
+<style scoped lang="scss"></style>
