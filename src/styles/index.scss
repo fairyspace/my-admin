@@ -1,0 +1,17 @@
+@use "reset";
+
+::-webkit-scrollbar{
+  width: 0.5em;
+}
+/*轨迹颜色*/
+::-webkit-scrollbar-track{
+  width: 0.5em;
+  background: $base-menu-background;
+}
+
+::-webkit-scrollbar-thumb{
+  width: 0.5em;
+  background: yellowgreen;
+  /*滚动按钮*/
+  border-radius: 4px;
+}

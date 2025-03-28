@@ -1,28 +1,26 @@
 <script lang="ts" setup>
-  import App from '@/App.vue'
-
-  defineProps({
-    prefix: {
-      type: String,
-      default: '#icon-'
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    color: {
-      type: String,
-      default: '#000'
-    },
-    width: {
-      type: String,
-      default: '30px'
-    },
-    height: {
-      type: String,
-      default: '30px'
-    }
-  })
+defineProps({
+  prefix: {
+    type: String,
+    default: '#icon-'
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  color: {
+    type: String,
+    default: '#000'
+  },
+  width: {
+    type: String,
+    default: '30px'
+  },
+  height: {
+    type: String,
+    default: '30px'
+  }
+})
 </script>
 
 <template>
