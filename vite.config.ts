@@ -21,6 +21,13 @@ export default defineConfig(({mode})=>{
         enable: true
       })
     ],
+    define: {
+      // 手动注入环境变量
+      'process.env': {
+        NODE_ENV: mode, // 或直接写字符串 'production'
+        API_BASE_URL: env.VITE_API_BASE_URL || 'https://mock.apipost.net/mock/336955316864000',
+      },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src')
