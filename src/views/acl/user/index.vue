@@ -1,207 +1,207 @@
 <script setup lang="ts">
-import { nextTick, onMounted, reactive, ref } from 'vue'
-import { Records, User, UserRequest, UserResponseData } from '@/api/acl/user/type.ts'
-import {
-  requestAddOrUpdateUser,
-  requestDeleteUser,
-  requestSetRole,
-  requestUserList,
-  requestUserRole
-} from '@/api/acl/user'
-import { ElMessage } from 'element-plus'
-import { AllRole, RoleResponseData, SetRoleData } from '@/api/user/type.ts'
-import useLayoutSettingStore from '@/store/modules/setting.ts'
+  import { nextTick, onMounted, reactive, ref } from 'vue'
+  import { Records, User, UserRequest, UserResponseData } from '@/api/acl/user/type.ts'
+  import {
+    requestAddOrUpdateUser,
+    requestDeleteUser,
+    requestSetRole,
+    requestUserList,
+    requestUserRole
+  } from '@/api/acl/user'
+  import { ElMessage } from 'element-plus'
+  import { AllRole, RoleResponseData, SetRoleData } from '@/api/user/type.ts'
+  import useLayoutSettingStore from '@/store/modules/setting.ts'
 
-let formVc = ref<any>()
-let userRequest: UserRequest = reactive({
-  pageNo: 1,
-  pageSize: 10,
-  username: ''
-})
+  let formVc = ref<any>()
+  let userRequest: UserRequest = reactive({
+    pageNo: 1,
+    pageSize: 10,
+    username: ''
+  })
 
-let total = ref<number>(0)
-let userAttr = ref<Records>([])
-let drawer = ref<boolean>(false)
-let drawer1 = ref<boolean>(false)
-let allRole = ref<AllRole>([])
-let userRole = ref<AllRole>([])
+  let total = ref<number>(0)
+  let userAttr = ref<Records>([])
+  let drawer = ref<boolean>(false)
+  let drawer1 = ref<boolean>(false)
+  let allRole = ref<AllRole>([])
+  let userRole = ref<AllRole>([])
 
-let userParams = reactive<User>({
-  username: '',
-  name: '',
-  password: ''
-})
-
-let getHasUserList = async (pager = 1) => {
-  pager = pager || 1
-  userRequest.pageNo = pager
-  let result: UserResponseData = await requestUserList(userRequest)
-  if (result.code == 200) {
-    total.value = result.data.total
-    userAttr.value = result.data.records
-  }
-}
-
-let sizeChange = async () => {
-  getHasUserList()
-}
-
-let addUser = () => {
-  Object.assign(userParams, {
-    id: '',
+  let userParams = reactive<User>({
     username: '',
     name: '',
     password: ''
   })
-  drawer.value = true
 
-  nextTick(() => {
-    formVc.value.clearValidate()
-  })
-}
-
-let updateUser = (row: User) => {
-  drawer.value = true
-  Object.assign(userParams, row)
-  //formVc.value.clearValidate()
-}
-
-onMounted(() => {
-  getHasUserList()
-})
-
-let save = async () => {
-  await formVc.value.validate()
-  let result = await requestAddOrUpdateUser(userParams)
-  if (result.code == 200) {
-    drawer.value = false
-    ElMessage({
-      type: 'success',
-      message: userParams.id ? '更新成功' : '添加成功'
-    })
-
-    getHasUserList(userParams.id ? userRequest.pageNo : 1)
-    window.location.reload()
-  } else {
-    drawer.value = false
-    ElMessage({
-      type: 'error',
-      message: userParams.id ? '更新失败' : '添加失败'
-    })
-  }
-}
-
-let cancel = () => {
-  drawer.value = false
-}
-
-let checkUserName = (rule: any, value: any, callBack: any) => {
-  if (value.trim().length > 5) {
-    callBack()
-  } else {
-    callBack(new Error('用户名字需要5位数'))
-  }
-}
-
-let checkName = (rule: any, value: any, callBack: any) => {
-  if (value.trim().length > 5) {
-    callBack()
-  } else {
-    callBack(new Error('用户昵称需要5位数'))
-  }
-}
-
-let checkPassword = (rule: any, value: any, callBack: any) => {
-  if (value.trim().length > 5) {
-    callBack()
-  } else {
-    callBack(new Error('密码需要5位数'))
-  }
-}
-
-let rules = {
-  username: [{ required: true, trigger: 'blur', validator: checkUserName }],
-  name: [{ required: true, trigger: 'blur', validator: checkName }],
-  password: [{ required: true, trigger: 'blur', validator: checkPassword }]
-}
-
-let setRole = async (row: User) => {
-  Object.assign(userParams, row)
-  let result: RoleResponseData = await requestUserRole(row.id as number)
-  if (result.code == 200) {
-    allRole.value = result.data.allRoleList
-    userRole.value = result.data.assignRoles
-    drawer1.value = true
-  }
-}
-
-let checkAll = ref<boolean>(false)
-let indeterminate = ref<boolean>(true)
-
-let allChange = (val: boolean) => {
-  indeterminate.value = false
-  userRole.value = val ? allRole.value : []
-}
-
-let singleChange = (val: string[]) => {
-  checkAll.value = val.length === allRole.value.length
-  indeterminate.value = !checkAll.value
-}
-
-let confirmSetRole = async () => {
-  let data: SetRoleData = {
-    userId: userParams.id as number,
-    roleIdList: userRole.value.map((item) => {
-      return item.id as number
-    })
+  let getHasUserList = async (pager = 1) => {
+    pager = pager || 1
+    userRequest.pageNo = pager
+    let result: UserResponseData = await requestUserList(userRequest)
+    if (result.code == 200) {
+      total.value = result.data.total
+      userAttr.value = result.data.records
+    }
   }
 
-  let result = await requestSetRole(data)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: result.message
-    })
+  let sizeChange = async () => {
     getHasUserList()
-  } else {
-    ElMessage({
-      type: 'error',
-      message: result.message
+  }
+
+  let addUser = () => {
+    Object.assign(userParams, {
+      id: '',
+      username: '',
+      name: '',
+      password: ''
+    })
+    drawer.value = true
+
+    nextTick(() => {
+      formVc.value.clearValidate()
     })
   }
-  drawer1.value = false
-}
-let cancelSetRole = () => {
-  drawer1.value = false
-}
 
-let deleteUser = async (userIds: number[]) => {
-  let result = await requestDeleteUser(userIds)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
-    })
-    getHasUserList(userAttr.value.length > 1 ? userRequest.pageNo : userRequest.pageNo - 1)
+  let updateUser = (row: User) => {
+    drawer.value = true
+    Object.assign(userParams, row)
+    //formVc.value.clearValidate()
   }
-}
 
-let selectIdAttr = ref<number[]>([])
-let selectChange = (changeData: any) => {
-  selectIdAttr.value = changeData.map((item: any) => {
-    return item.id
+  onMounted(() => {
+    getHasUserList()
   })
-}
 
-let search = () => {
-  getHasUserList()
-}
+  let save = async () => {
+    await formVc.value.validate()
+    let result = await requestAddOrUpdateUser(userParams)
+    if (result.code == 200) {
+      drawer.value = false
+      ElMessage({
+        type: 'success',
+        message: userParams.id ? '更新成功' : '添加成功'
+      })
 
-let layoutSettingStore = useLayoutSettingStore()
+      getHasUserList(userParams.id ? userRequest.pageNo : 1)
+      window.location.reload()
+    } else {
+      drawer.value = false
+      ElMessage({
+        type: 'error',
+        message: userParams.id ? '更新失败' : '添加失败'
+      })
+    }
+  }
 
-let reset = () => {
-  layoutSettingStore.refresh = !layoutSettingStore.refresh
-}
+  let cancel = () => {
+    drawer.value = false
+  }
+
+  let checkUserName = (rule: any, value: any, callBack: any) => {
+    if (value.trim().length > 5) {
+      callBack()
+    } else {
+      callBack(new Error('用户名字需要5位数'))
+    }
+  }
+
+  let checkName = (rule: any, value: any, callBack: any) => {
+    if (value.trim().length > 5) {
+      callBack()
+    } else {
+      callBack(new Error('用户昵称需要5位数'))
+    }
+  }
+
+  let checkPassword = (rule: any, value: any, callBack: any) => {
+    if (value.trim().length > 5) {
+      callBack()
+    } else {
+      callBack(new Error('密码需要5位数'))
+    }
+  }
+
+  let rules = {
+    username: [{ required: true, trigger: 'blur', validator: checkUserName }],
+    name: [{ required: true, trigger: 'blur', validator: checkName }],
+    password: [{ required: true, trigger: 'blur', validator: checkPassword }]
+  }
+
+  let setRole = async (row: User) => {
+    Object.assign(userParams, row)
+    let result: RoleResponseData = await requestUserRole(row.id as number)
+    if (result.code == 200) {
+      allRole.value = result.data.allRoleList
+      userRole.value = result.data.assignRoles
+      drawer1.value = true
+    }
+  }
+
+  let checkAll = ref<boolean>(false)
+  let indeterminate = ref<boolean>(true)
+
+  let allChange = (val: boolean) => {
+    indeterminate.value = false
+    userRole.value = val ? allRole.value : []
+  }
+
+  let singleChange = (val: string[]) => {
+    checkAll.value = val.length === allRole.value.length
+    indeterminate.value = !checkAll.value
+  }
+
+  let confirmSetRole = async () => {
+    let data: SetRoleData = {
+      userId: userParams.id as number,
+      roleIdList: userRole.value.map((item) => {
+        return item.id as number
+      })
+    }
+
+    let result = await requestSetRole(data)
+    if (result.code == 200) {
+      ElMessage({
+        type: 'success',
+        message: result.message
+      })
+      getHasUserList()
+    } else {
+      ElMessage({
+        type: 'error',
+        message: result.message
+      })
+    }
+    drawer1.value = false
+  }
+  let cancelSetRole = () => {
+    drawer1.value = false
+  }
+
+  let deleteUser = async (userIds: number[]) => {
+    let result = await requestDeleteUser(userIds)
+    if (result.code == 200) {
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+      getHasUserList(userAttr.value.length > 1 ? userRequest.pageNo : userRequest.pageNo - 1)
+    }
+  }
+
+  let selectIdAttr = ref<number[]>([])
+  let selectChange = (changeData: any) => {
+    selectIdAttr.value = changeData.map((item: any) => {
+      return item.id
+    })
+  }
+
+  let search = () => {
+    getHasUserList()
+  }
+
+  let layoutSettingStore = useLayoutSettingStore()
+
+  let reset = () => {
+    layoutSettingStore.refresh = !layoutSettingStore.refresh
+  }
 </script>
 <template>
   <div>

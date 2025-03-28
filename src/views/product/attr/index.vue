@@ -1,145 +1,145 @@
 <script setup lang="ts">
-import { reactive, ref, watch, nextTick } from 'vue'
-import useCateGoryStore from '@/store/modules/category.ts'
-import { addOrUpdateAttr, requestAttrInfoList, requestDeleteAttr } from '@/api/product/attr'
-import { AttrInfo, attrValue, responseData } from '@/api/product/attr/type.ts'
-import { ElMessage } from 'element-plus'
+  import { reactive, ref, watch, nextTick } from 'vue'
+  import useCateGoryStore from '@/store/modules/category.ts'
+  import { addOrUpdateAttr, requestAttrInfoList, requestDeleteAttr } from '@/api/product/attr'
+  import { AttrInfo, attrValue, responseData } from '@/api/product/attr/type.ts'
+  import { ElMessage } from 'element-plus'
 
-let cateGoryStore = useCateGoryStore()
+  let cateGoryStore = useCateGoryStore()
 
-let attrList = ref<AttrInfo[]>([])
-let inputAttr = ref<any>([])
+  let attrList = ref<AttrInfo[]>([])
+  let inputAttr = ref<any>([])
 
-let scene = ref<number>(0)
+  let scene = ref<number>(0)
 
-let attrParams = reactive<AttrInfo>({
-  attrName: '',
-  attrValueList: [],
-  categoryId: '',
-  categoryLevel: 3
-})
-
-watch(
-  () => cateGoryStore.attr3Id,
-  async () => {
-    //当监听到变化，需要清空数组
-    attrList.value = []
-    //当切换按钮，导致三级分类没有数据时候不需要发请求
-    if (!cateGoryStore.attr3Id) return
-    //仓库对象解构ID
-    getAttrInfoList()
-  }
-)
-
-const getAttrInfoList = async () => {
-  let result = await requestAttrInfoList({ categoryId: cateGoryStore.attr3Id })
-  if (result.code == 200) {
-    attrList.value = result.data
-  }
-}
-
-const addAttr = () => {
-  /*添加时候重制表单数据*/
-  Object.assign(attrParams, {
+  let attrParams = reactive<AttrInfo>({
     attrName: '',
     attrValueList: [],
     categoryId: '',
     categoryLevel: 3
   })
-  scene.value = 1
-  attrParams.categoryId = cateGoryStore.attr3Id
-}
 
-const updateAttr = (row: AttrInfo) => {
-  scene.value = 1
-  /*将已经有的属性对象给收集对象*/
-  /*此处需要注意，当赋值之后又取消，会发现list展示界面数据会变化，需要深度拷贝去除同一个地址*/
-  Object.assign(attrParams, JSON.parse(JSON.stringify(row)))
-}
-
-const cancel = () => {
-  scene.value = 0
-}
-
-const addAttrValue = () => {
-  attrParams.attrValueList.push({
-    valueName: '',
-    flag: true
-  })
-
-  nextTick(() => {
-    inputAttr.value[attrParams.attrValueList.length - 1].focus()
-  })
-}
-
-const save = async () => {
-  let result = await addOrUpdateAttr(attrParams)
-  if (result.code == 200) {
-    scene.value = 0
-    ElMessage({
-      type: 'success',
-      message: attrParams.id ? '修改成功' : '新增成功'
-    })
-    getAttrInfoList()
-  } else {
-    ElMessage({
-      type: 'error',
-      message: attrParams.id ? '修改失败' : '新增失败'
-    })
-  }
-}
-
-const toView = (row: attrValue, $index: number) => {
-  if (row.valueName.trim() == '') {
-    attrParams.attrValueList.splice($index, 1)
-    ElMessage({
-      type: 'error',
-      message: '属性值不能为空'
-    })
-    return
-  }
-
-  let repeat = attrParams.attrValueList.find((item) => {
-    //去除自我的查重
-    if (item != row) {
-      return item.valueName === row.valueName
+  watch(
+    () => cateGoryStore.attr3Id,
+    async () => {
+      //当监听到变化，需要清空数组
+      attrList.value = []
+      //当切换按钮，导致三级分类没有数据时候不需要发请求
+      if (!cateGoryStore.attr3Id) return
+      //仓库对象解构ID
+      getAttrInfoList()
     }
-  })
+  )
 
-  if (repeat) {
-    attrParams.attrValueList.splice($index, 1)
-    ElMessage({
-      type: 'error',
-      message: '属性值不能重复'
+  const getAttrInfoList = async () => {
+    let result = await requestAttrInfoList({ categoryId: cateGoryStore.attr3Id })
+    if (result.code == 200) {
+      attrList.value = result.data
+    }
+  }
+
+  const addAttr = () => {
+    /*添加时候重制表单数据*/
+    Object.assign(attrParams, {
+      attrName: '',
+      attrValueList: [],
+      categoryId: '',
+      categoryLevel: 3
+    })
+    scene.value = 1
+    attrParams.categoryId = cateGoryStore.attr3Id
+  }
+
+  const updateAttr = (row: AttrInfo) => {
+    scene.value = 1
+    /*将已经有的属性对象给收集对象*/
+    /*此处需要注意，当赋值之后又取消，会发现list展示界面数据会变化，需要深度拷贝去除同一个地址*/
+    Object.assign(attrParams, JSON.parse(JSON.stringify(row)))
+  }
+
+  const cancel = () => {
+    scene.value = 0
+  }
+
+  const addAttrValue = () => {
+    attrParams.attrValueList.push({
+      valueName: '',
+      flag: true
+    })
+
+    nextTick(() => {
+      inputAttr.value[attrParams.attrValueList.length - 1].focus()
     })
   }
 
-  row.flag = false
-}
+  const save = async () => {
+    let result = await addOrUpdateAttr(attrParams)
+    if (result.code == 200) {
+      scene.value = 0
+      ElMessage({
+        type: 'success',
+        message: attrParams.id ? '修改成功' : '新增成功'
+      })
+      getAttrInfoList()
+    } else {
+      ElMessage({
+        type: 'error',
+        message: attrParams.id ? '修改失败' : '新增失败'
+      })
+    }
+  }
 
-const toEdit = (row: attrValue, $index: number) => {
-  row.flag = true
+  const toView = (row: attrValue, $index: number) => {
+    if (row.valueName.trim() == '') {
+      attrParams.attrValueList.splice($index, 1)
+      ElMessage({
+        type: 'error',
+        message: '属性值不能为空'
+      })
+      return
+    }
 
-  nextTick(() => {
-    inputAttr.value[$index].focus()
-  })
-}
-
-const deleteAttr = async (id: number) => {
-  let result: responseData = await requestDeleteAttr(id)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
+    let repeat = attrParams.attrValueList.find((item) => {
+      //去除自我的查重
+      if (item != row) {
+        return item.valueName === row.valueName
+      }
     })
-    getAttrInfoList()
-  } else {
-    ElMessage({
-      type: 'error',
-      message: '删除失败'
+
+    if (repeat) {
+      attrParams.attrValueList.splice($index, 1)
+      ElMessage({
+        type: 'error',
+        message: '属性值不能重复'
+      })
+    }
+
+    row.flag = false
+  }
+
+  const toEdit = (row: attrValue, $index: number) => {
+    row.flag = true
+
+    nextTick(() => {
+      inputAttr.value[$index].focus()
     })
   }
-}
+
+  const deleteAttr = async (id: number) => {
+    let result: responseData = await requestDeleteAttr(id)
+    if (result.code == 200) {
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+      getAttrInfoList()
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '删除失败'
+      })
+    }
+  }
 </script>
 
 <template>

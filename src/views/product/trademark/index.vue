@@ -86,188 +86,188 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, reactive, ref } from 'vue'
-import {
-  addOrUpdateTradeMark,
-  requestDeleteTradeMark,
-  requestTradeMark
-} from '@/api/product/trademark'
-import {
-  pageFrom,
-  Records,
-  TradeMark,
-  TradeMarkResponseData
-} from '@/api/product/trademark/type.ts'
-import type { UploadProps } from 'element-plus'
-import { ElMessage } from 'element-plus'
+  import { nextTick, onMounted, reactive, ref } from 'vue'
+  import {
+    addOrUpdateTradeMark,
+    requestDeleteTradeMark,
+    requestTradeMark
+  } from '@/api/product/trademark'
+  import {
+    pageFrom,
+    Records,
+    TradeMark,
+    TradeMarkResponseData
+  } from '@/api/product/trademark/type.ts'
+  import type { UploadProps } from 'element-plus'
+  import { ElMessage } from 'element-plus'
 
-let total = ref<number>(3)
-let tradeMarkAttr = ref<Records>([])
-let dialogVisible = ref<boolean>(false)
+  let total = ref<number>(3)
+  let tradeMarkAttr = ref<Records>([])
+  let dialogVisible = ref<boolean>(false)
 
-let dialogTitle = ref<string>('')
+  let dialogTitle = ref<string>('')
 
-let formRef = ref()
+  let formRef = ref()
 
-const dataParams: TradeMark = reactive({
-  tmName: '',
-  logoUrl: ''
-})
-
-const data: pageFrom = reactive({
-  pageNum: 1,
-  pageSize: 3
-})
-
-const getTrademarks = async () => {
-  let result: TradeMarkResponseData = await requestTradeMark(data)
-  if (result.code == 200) {
-    total.value = result.data.total
-    tradeMarkAttr.value = result.data.records
-  }
-}
-
-const changePageNum = () => {
-  //当前页码发生变化时候再次请求，但是不需要主动赋值，因为变化就绑定了值，传那个值的地址就行
-  getTrademarks()
-}
-
-const changePageSize = () => {
-  //当前页码发生变化时候再次请求，但是不需要主动赋值，因为变化就绑定了值，传那个值的地址就行
-  data.pageNum = 1
-  getTrademarks()
-}
-
-const addTradeMark = () => {
-  dialogTitle.value = '添加数据'
-  dataParams.logoUrl = ''
-  dataParams.tmName = ''
-  dataParams.id = undefined
-  dialogVisible.value = true
-
-  nextTick(() => {
-    formRef.value.clearValidate('tmName')
-    formRef.value.clearValidate('logoUrl')
+  const dataParams: TradeMark = reactive({
+    tmName: '',
+    logoUrl: ''
   })
-}
 
-const updateTradeMark = (row: TradeMark) => {
-  dataParams.logoUrl = row.logoUrl
-  dataParams.tmName = row.tmName
-  dataParams.id = row.id
-  dialogTitle.value = '修改数据'
-  dialogVisible.value = true
-  nextTick(() => {
-    formRef.value.clearValidate('tmName')
-    formRef.value.clearValidate('logoUrl')
+  const data: pageFrom = reactive({
+    pageNum: 1,
+    pageSize: 3
   })
-}
 
-const cancel = () => {
-  dialogVisible.value = false
-}
-const confirm = async () => {
-  await formRef.value.validate()
-
-  let result = await addOrUpdateTradeMark(dataParams)
-  if (result.code == 200) {
-    dialogVisible.value = false
-    ElMessage({
-      type: 'success',
-      message: dataParams.id ? '修改成功' : '添加成功'
-    })
-
-    /*再次发送请求,新增时候刷新数据列表，修改不用刷新*/
-    if (!dataParams.id) getTrademarks()
-  } else {
-    dialogVisible.value = false
-    ElMessage({
-      type: 'error',
-      message: dataParams.id ? '修改失败' : '添加失败'
-    })
-  }
-}
-
-const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg') {
-    ElMessage.error('Avatar picture must be JPG format!')
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('Avatar picture size can not exceed 2MB!')
-    return false
-  }
-  return true
-}
-
-const handleAvatarSuccess: UploadProps['onSuccess'] = (response) => {
-  dataParams.logoUrl = response.data
-  formRef.value.clearValidate()
-}
-
-const validatorTmName = (rule: any, value: any, callBack: any) => {
-  if (value.trim().length > 2) {
-    callBack()
-  } else {
-    callBack(new Error('输入的值过短'))
-  }
-}
-
-const validatorLogoUrl = (rule: any, value: any, callBack: any) => {
-  if (!value) {
-    callBack(new Error('图片需要上传'))
-  } else {
-    callBack()
-  }
-}
-
-const rules = {
-  tmName: [
-    {
-      //required必须要校验，
-      //校验触发的时机是blur
-      //校验规则是什么
-      validator: validatorTmName,
-      trigger: 'blur',
-      required: true
+  const getTrademarks = async () => {
+    let result: TradeMarkResponseData = await requestTradeMark(data)
+    if (result.code == 200) {
+      total.value = result.data.total
+      tradeMarkAttr.value = result.data.records
     }
-  ],
-  logoUrl: [
-    {
-      //required必须要校验，
-      //校验触发的时机是blur
-      //校验规则是什么
-      validator: validatorLogoUrl,
-      trigger: 'change',
-      required: true
-    }
-  ]
-}
+  }
 
-const removeTradeMark = async (id: number) => {
-  let result = await requestDeleteTradeMark(id)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
-    })
-    /*删除后刷新页面*/
-    if (tradeMarkAttr.value.length == 1) {
-      data.pageNum = data.pageNum - 1 ? data.pageNum - 1 : 1
-    }
-
+  const changePageNum = () => {
+    //当前页码发生变化时候再次请求，但是不需要主动赋值，因为变化就绑定了值，传那个值的地址就行
     getTrademarks()
-  } else {
-    ElMessage({
-      type: 'error',
-      message: '删除失败'
+  }
+
+  const changePageSize = () => {
+    //当前页码发生变化时候再次请求，但是不需要主动赋值，因为变化就绑定了值，传那个值的地址就行
+    data.pageNum = 1
+    getTrademarks()
+  }
+
+  const addTradeMark = () => {
+    dialogTitle.value = '添加数据'
+    dataParams.logoUrl = ''
+    dataParams.tmName = ''
+    dataParams.id = undefined
+    dialogVisible.value = true
+
+    nextTick(() => {
+      formRef.value.clearValidate('tmName')
+      formRef.value.clearValidate('logoUrl')
     })
   }
-}
 
-/*页面加载时候加载数据*/
-onMounted(() => {
-  getTrademarks()
-})
+  const updateTradeMark = (row: TradeMark) => {
+    dataParams.logoUrl = row.logoUrl
+    dataParams.tmName = row.tmName
+    dataParams.id = row.id
+    dialogTitle.value = '修改数据'
+    dialogVisible.value = true
+    nextTick(() => {
+      formRef.value.clearValidate('tmName')
+      formRef.value.clearValidate('logoUrl')
+    })
+  }
+
+  const cancel = () => {
+    dialogVisible.value = false
+  }
+  const confirm = async () => {
+    await formRef.value.validate()
+
+    let result = await addOrUpdateTradeMark(dataParams)
+    if (result.code == 200) {
+      dialogVisible.value = false
+      ElMessage({
+        type: 'success',
+        message: dataParams.id ? '修改成功' : '添加成功'
+      })
+
+      /*再次发送请求,新增时候刷新数据列表，修改不用刷新*/
+      if (!dataParams.id) getTrademarks()
+    } else {
+      dialogVisible.value = false
+      ElMessage({
+        type: 'error',
+        message: dataParams.id ? '修改失败' : '添加失败'
+      })
+    }
+  }
+
+  const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+    if (rawFile.type !== 'image/jpeg') {
+      ElMessage.error('Avatar picture must be JPG format!')
+      return false
+    } else if (rawFile.size / 1024 / 1024 > 2) {
+      ElMessage.error('Avatar picture size can not exceed 2MB!')
+      return false
+    }
+    return true
+  }
+
+  const handleAvatarSuccess: UploadProps['onSuccess'] = (response) => {
+    dataParams.logoUrl = response.data
+    formRef.value.clearValidate()
+  }
+
+  const validatorTmName = (rule: any, value: any, callBack: any) => {
+    if (value.trim().length > 2) {
+      callBack()
+    } else {
+      callBack(new Error('输入的值过短'))
+    }
+  }
+
+  const validatorLogoUrl = (rule: any, value: any, callBack: any) => {
+    if (!value) {
+      callBack(new Error('图片需要上传'))
+    } else {
+      callBack()
+    }
+  }
+
+  const rules = {
+    tmName: [
+      {
+        //required必须要校验，
+        //校验触发的时机是blur
+        //校验规则是什么
+        validator: validatorTmName,
+        trigger: 'blur',
+        required: true
+      }
+    ],
+    logoUrl: [
+      {
+        //required必须要校验，
+        //校验触发的时机是blur
+        //校验规则是什么
+        validator: validatorLogoUrl,
+        trigger: 'change',
+        required: true
+      }
+    ]
+  }
+
+  const removeTradeMark = async (id: number) => {
+    let result = await requestDeleteTradeMark(id)
+    if (result.code == 200) {
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+      /*删除后刷新页面*/
+      if (tradeMarkAttr.value.length == 1) {
+        data.pageNum = data.pageNum - 1 ? data.pageNum - 1 : 1
+      }
+
+      getTrademarks()
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '删除失败'
+      })
+    }
+  }
+
+  /*页面加载时候加载数据*/
+  onMounted(() => {
+    getTrademarks()
+  })
 </script>
 
 <style scoped lang="scss">

@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import useCateGoryStore from '@/store/modules/category.ts'
-import { onMounted, onBeforeUnmount } from 'vue'
-let cateGoryStore = useCateGoryStore()
+  import useCateGoryStore from '@/store/modules/category.ts'
+  import { onMounted, onBeforeUnmount } from 'vue'
+  let cateGoryStore = useCateGoryStore()
 
-defineProps(['scene'])
+  defineProps(['scene'])
 
-let choose = (data: number, id: number | string) => {
-  /*通知仓库获取二级仓库地址*/
-  /*当切换时候，需要把历史数据清理了,请求点击一级分类会导致二级分类加载，此时清空二级三级数据*/
-  if (data == 2) {
-    cateGoryStore.attr2Id = ''
-    cateGoryStore.attr3Id = ''
+  let choose = (data: number, id: number | string) => {
+    /*通知仓库获取二级仓库地址*/
+    /*当切换时候，需要把历史数据清理了,请求点击一级分类会导致二级分类加载，此时清空二级三级数据*/
+    if (data == 2) {
+      cateGoryStore.attr2Id = ''
+      cateGoryStore.attr3Id = ''
+    }
+    if (data == 3) {
+      cateGoryStore.attr3Id = ''
+    }
+    cateGoryStore.getCateGory({ level: data, parentId: id })
   }
-  if (data == 3) {
-    cateGoryStore.attr3Id = ''
+
+  onMounted(async () => {
+    getCateGory()
+  })
+
+  const getCateGory = () => {
+    cateGoryStore.getCateGory({ level: 1, parentId: '' })
   }
-  cateGoryStore.getCateGory({ level: data, parentId: id })
-}
 
-onMounted(async () => {
-  getCateGory()
-})
-
-const getCateGory = () => {
-  cateGoryStore.getCateGory({ level: 1, parentId: '' })
-}
-
-onBeforeUnmount(() => {
-  cateGoryStore.$reset()
-})
+  onBeforeUnmount(() => {
+    cateGoryStore.$reset()
+  })
 </script>
 
 <template>

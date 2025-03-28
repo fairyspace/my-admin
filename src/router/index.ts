@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import {constantRoute} from './routes.ts'
+import { constantRoute } from './routes.ts'
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 import useUserStore from '@/store/modules/user.ts'
@@ -9,8 +9,6 @@ import setting from '@/setting.ts'
 /*移除旋转小球特效*/
 nprogress.configure({ showSpinner: false })
 
-
-
 const router = createRouter({
   history: createWebHashHistory(),
   routes: constantRoute,
@@ -19,7 +17,6 @@ const router = createRouter({
     return { top: 0, left: 0 }
   }
 })
-
 
 /*用户未登录时候，可以访问login,其他不能访问*/
 /*用户登陆成功，不能访问login，否则转向home*/
@@ -43,10 +40,9 @@ router.beforeEach(async (to, from, next) => {
       } else {
         //没有用户信息，重新拉取
         try {
-
           await userStore.userInfo()
           //刷新时候异步路由，获取到了用户信息，异步路由还没加载完毕，出现空白，而不是使用next()
-          next({...to})
+          next({ ...to })
         } catch (error) {
           //token过期了导致没有用户信息
           //或者用户自己修改了本地cache,

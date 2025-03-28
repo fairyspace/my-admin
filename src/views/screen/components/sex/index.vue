@@ -1,58 +1,58 @@
 <script setup lang="ts">
-import * as echarts from 'echarts'
-import { onMounted, ref } from 'vue'
+  import * as echarts from 'echarts'
+  import { onMounted, ref } from 'vue'
 
-let charts = ref()
+  let charts = ref()
 
-onMounted(() => {
-  let mycharts = echarts.init(charts.value)
-  mycharts.setOption({
-    title: {
-      text: '男女比例',
-      textStyle: {
-        color: 'skyblue'
+  onMounted(() => {
+    let mycharts = echarts.init(charts.value)
+    mycharts.setOption({
+      title: {
+        text: '男女比例',
+        textStyle: {
+          color: 'skyblue'
+        },
+        left: '40%'
       },
-      left: '40%'
-    },
-    xAxis: {
-      show: false,
-      min: 0,
-      max: 100
-    },
-    yAxis: {
-      show: false,
-      type: 'category'
-    },
-    grid: {
-      left: '0',
-      top: '0',
-      right: '0',
-      bottom: '0'
-    },
-    series: [
-      {
-        type: 'bar',
-        data: [48],
-        barWidth: 20,
-        z: 100,
-        itemStyle: {
-          color: 'skyblue',
-          borderRadius: 20
-        }
+      xAxis: {
+        show: false,
+        min: 0,
+        max: 100
       },
-      {
-        type: 'bar',
-        data: [100],
-        barWidth: 20,
-        barGap: '-100%',
-        itemStyle: {
-          color: 'pink',
-          borderRadius: 20
+      yAxis: {
+        show: false,
+        type: 'category'
+      },
+      grid: {
+        left: '0',
+        top: '0',
+        right: '0',
+        bottom: '0'
+      },
+      series: [
+        {
+          type: 'bar',
+          data: [48],
+          barWidth: 20,
+          z: 100,
+          itemStyle: {
+            color: 'skyblue',
+            borderRadius: 20
+          }
+        },
+        {
+          type: 'bar',
+          data: [100],
+          barWidth: 20,
+          barGap: '-100%',
+          itemStyle: {
+            color: 'pink',
+            borderRadius: 20
+          }
         }
-      }
-    ]
+      ]
+    })
   })
-})
 </script>
 
 <template>
@@ -88,55 +88,52 @@ onMounted(() => {
     margin-left: 20px;
     margin-top: 10px;
 
-      .title {
-        p {
-          color: white;
-          font-size: 20px;
+    .title {
+      p {
+        color: white;
+        font-size: 20px;
+      }
+
+      img {
+        margin-top: 10px;
+      }
+    }
+
+    .line {
+      margin: 60px 60px;
+      .sex {
+        display: flex;
+        justify-content: space-around;
+
+        .man {
+          width: 111px;
+          height: 116px;
+          background: url('../../images/man-bg.png') no-repeat;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
-        img {
-          margin-top: 10px;
+        .woman {
+          width: 111px;
+          height: 115px;
+          background: url('../../images/woman-bg.png') no-repeat;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
       }
 
-      .line{
-        margin: 60px 60px;
-        .sex {
-          display: flex;
-          justify-content: space-around;
-
-          .man {
-            width: 111px;
-            height: 116px;
-            background: url('../../images/man-bg.png') no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-
-          .woman {
-            width: 111px;
-            height: 115px;
-            background: url('../../images/woman-bg.png') no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-        }
-
-        .rate {
-          display: flex;
-          justify-content: space-between;
-          color: white;
-          font-size: 20px;
-        }
-
-        .charts {
-          height: 100px;
-        }
+      .rate {
+        display: flex;
+        justify-content: space-between;
+        color: white;
+        font-size: 20px;
       }
 
-
-
+      .charts {
+        height: 100px;
+      }
+    }
   }
 </style>

@@ -51,11 +51,10 @@ export const constantRoute = [
       hidden: false,
       icon: 'Platform'
     }
-  },
+  }
 ]
 
-
-export const asyncRoute= [
+export const asyncRoute = [
   {
     path: '/acl',
     component: () => import('@/layout/index.vue'),
@@ -151,20 +150,19 @@ export const asyncRoute= [
         }
       }
     ]
-  },
+  }
 ]
 
-export const anyRoute=[  {
-  /*其他匹配不到路径*/
-  path: '/:pathMatch(.*)*',
-  component: () => import('@/views/404/index.vue'),
-  name: 'Any',
-  meta: {
-    title: 'Any',
-    hidden: true,
-    icon: 'CloseBold'
+export const anyRoute = [
+  {
+    /*其他匹配不到路径*/
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/views/404/index.vue'),
+    name: 'Any',
+    meta: {
+      title: 'Any',
+      hidden: true,
+      icon: 'CloseBold'
+    }
   }
-}]
-
-
-
+]

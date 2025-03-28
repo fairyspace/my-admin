@@ -4,18 +4,16 @@ import type { loginForm, loginResponseData } from '@/api/user/type.ts'
 import { requestLogin, requestLogout, requestUserInfo } from '@/api/user'
 import { GET_TOKEN, REMOVE_TOKEN, SET_TOKEN } from '@/utils/token.ts'
 import type { UserState } from '@/store/modules/types/types.ts'
-import {constantRoute,asyncRoute,anyRoute} from '@/router/routes.ts'
+import { constantRoute, asyncRoute, anyRoute } from '@/router/routes.ts'
 import { userResponseData } from '@/api/user/type.ts'
 //@ts-ignore
 import cloneDeep from 'lodash/cloneDeep'
 
-
-
-function filterAsyncRoute(asyncRoute:any,routes:any){
-  return  asyncRoute.filter((item:any)=>{
-    if (routes.includes(item.name)){
-      if(item.children &&item.children.length>0){
-        item.children=filterAsyncRoute(item.children,routes)
+function filterAsyncRoute(asyncRoute: any, routes: any) {
+  return asyncRoute.filter((item: any) => {
+    if (routes.includes(item.name)) {
+      if (item.children && item.children.length > 0) {
+        item.children = filterAsyncRoute(item.children, routes)
       }
       return true
     }
@@ -31,7 +29,7 @@ const useUserStore = defineStore('User', {
       menuRoutes: constantRoute,
       username: '',
       avatar: '',
-      buttons:[]
+      buttons: []
     }
   },
   /*异步逻辑处理地方*/
@@ -55,16 +53,14 @@ const useUserStore = defineStore('User', {
         this.username = responseData.data.username
         this.avatar = responseData.data.avatar
 
-        const userAsyncRoute=filterAsyncRoute(cloneDeep(asyncRoute) ,responseData.data.routes)
-        this.menuRoutes = [...constantRoute,...userAsyncRoute,...anyRoute];
+        const userAsyncRoute = filterAsyncRoute(cloneDeep(asyncRoute), responseData.data.routes)
+        this.menuRoutes = [...constantRoute, ...userAsyncRoute, ...anyRoute]
 
-
-
-        [...anyRoute,...userAsyncRoute].forEach((route:any)=>{
+        ;[...anyRoute, ...userAsyncRoute].forEach((route: any) => {
           router.addRoute(route)
         })
 
-        this.buttons=responseData.data.buttons
+        this.buttons = responseData.data.buttons
         return 'ok'
       } else {
         return Promise.reject('获取用户信息失败')

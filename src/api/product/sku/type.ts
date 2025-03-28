@@ -34,14 +34,14 @@ export interface SkuData {
   skuSaleAttrValueList?: SaleAttr[]
   skuDefaultImg?: string
   isSale?: number
-  id?: number,
-  skuImageList?:Image[]
+  id?: number
+  skuImageList?: Image[]
 }
 
-export interface Image{
-  id:number,
-  imgUrl:string,
-  imgName:string
+export interface Image {
+  id: number
+  imgUrl: string
+  imgName: string
 }
 
 export interface SkuResponseData extends ResponseData {

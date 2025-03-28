@@ -1,69 +1,69 @@
 <script setup lang="ts">
-import useLayoutSettingStore from '@/store/modules/setting.ts'
-import { ref } from 'vue'
+  import useLayoutSettingStore from '@/store/modules/setting.ts'
+  import { ref } from 'vue'
 
-import useUserStore from '@/store/modules/user.ts'
+  import useUserStore from '@/store/modules/user.ts'
 
-import { useRouter, useRoute } from 'vue-router'
+  import { useRouter, useRoute } from 'vue-router'
 
-let userStore = useUserStore()
+  let userStore = useUserStore()
 
-let layoutSettingStore = useLayoutSettingStore()
+  let layoutSettingStore = useLayoutSettingStore()
 
-let $router = useRouter()
-let $route = useRoute()
+  let $router = useRouter()
+  let $route = useRoute()
 
-let dark = ref<boolean>(false)
+  let dark = ref<boolean>(false)
 
-const updateRefresh = () => {
-  layoutSettingStore.refresh = !layoutSettingStore.refresh
-}
-
-const fullScreen = () => {
-  let full = document.fullscreenElement
-  if (!full) {
-    document.documentElement.requestFullscreen()
-  } else {
-    document.exitFullscreen()
+  const updateRefresh = () => {
+    layoutSettingStore.refresh = !layoutSettingStore.refresh
   }
-}
 
-const loginout = async () => {
-  //第一件请求后台销毁这个token
-  //第二件事是前端清空用户数据
-  //第三件事是返回登陆界面
-  let result = await userStore.userLogout()
-  //设置返回的路径是/login?redirect=$route.path
-  $router.push({ path: '/login', query: { redirect: $route.path } })
-}
+  const fullScreen = () => {
+    let full = document.fullscreenElement
+    if (!full) {
+      document.documentElement.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }
 
-const color = ref<string>('rgba(255, 69, 0, 0.68)')
-const predefineColors = ref<string[]>([
-  '#ff4500',
-  '#ff8c00',
-  '#ffd700',
-  '#90ee90',
-  '#00ced1',
-  '#1e90ff',
-  '#c71585',
-  'rgba(255, 69, 0, 0.68)',
-  'rgb(255, 120, 0)',
-  'hsv(51, 100, 98)',
-  'hsva(120, 40, 94, 0.5)',
-  'hsl(181, 100%, 37%)',
-  'hsla(209, 100%, 56%, 0.73)',
-  '#c7158577'
-])
+  const loginout = async () => {
+    //第一件请求后台销毁这个token
+    //第二件事是前端清空用户数据
+    //第三件事是返回登陆界面
+    let result = await userStore.userLogout()
+    //设置返回的路径是/login?redirect=$route.path
+    $router.push({ path: '/login', query: { redirect: $route.path } })
+  }
 
-let change = () => {
-  let html = document.documentElement
-  dark.value ? (html.className = 'dark') : (html.className = '')
-}
+  const color = ref<string>('rgba(255, 69, 0, 0.68)')
+  const predefineColors = ref<string[]>([
+    '#ff4500',
+    '#ff8c00',
+    '#ffd700',
+    '#90ee90',
+    '#00ced1',
+    '#1e90ff',
+    '#c71585',
+    'rgba(255, 69, 0, 0.68)',
+    'rgb(255, 120, 0)',
+    'hsv(51, 100, 98)',
+    'hsva(120, 40, 94, 0.5)',
+    'hsl(181, 100%, 37%)',
+    'hsla(209, 100%, 56%, 0.73)',
+    '#c7158577'
+  ])
 
-let setColor = () => {
-  let html = document.documentElement
-  html.style.setProperty('--el-color-primary', color.value)
-}
+  let change = () => {
+    let html = document.documentElement
+    dark.value ? (html.className = 'dark') : (html.className = '')
+  }
+
+  let setColor = () => {
+    let html = document.documentElement
+    html.style.setProperty('--el-color-primary', color.value)
+  }
 </script>
 
 <template>

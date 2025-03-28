@@ -1,92 +1,92 @@
 <script setup lang="ts">
-import { reactive, onMounted, ref } from 'vue'
-import {
-  requestDeleteSku,
-  requestSaleSku,
-  requestSkuInfo,
-  requestSkuList
-} from '@/api/product/sku'
-import { RequestData, SkuResponseData } from '@/api/product/sku/type.ts'
-import { SkuData } from '@/api/product/sku/type.ts'
-import { ElMessage } from 'element-plus'
+  import { reactive, onMounted, ref } from 'vue'
+  import {
+    requestDeleteSku,
+    requestSaleSku,
+    requestSkuInfo,
+    requestSkuList
+  } from '@/api/product/sku'
+  import { RequestData, SkuResponseData } from '@/api/product/sku/type.ts'
+  import { SkuData } from '@/api/product/sku/type.ts'
+  import { ElMessage } from 'element-plus'
 
-let comRequest: RequestData = reactive({
-  pageNo: 1,
-  pageSize: 3
-})
+  let comRequest: RequestData = reactive({
+    pageNo: 1,
+    pageSize: 3
+  })
 
-let skuAttr = ref<SkuData[]>([])
-let total = ref<number>(0)
-let skuInfo = ref<SkuData>({})
+  let skuAttr = ref<SkuData[]>([])
+  let total = ref<number>(0)
+  let skuInfo = ref<SkuData>({})
 
-let updateSale = async (row: SkuData) => {
-  if (row.isSale == 1) {
-    let result = await requestSaleSku(row.id as number, 0)
+  let updateSale = async (row: SkuData) => {
+    if (row.isSale == 1) {
+      let result = await requestSaleSku(row.id as number, 0)
+      if (result.code == 200) {
+        ElMessage({
+          type: 'success',
+          message: '下架成功'
+        })
+        row.isSale = 0
+      }
+    } else {
+      let result = await requestSaleSku(row.id as number, 1)
+      if (result.code == 200) {
+        ElMessage({
+          type: 'success',
+          message: '上架成功'
+        })
+        row.isSale = 1
+      }
+    }
+  }
+
+  onMounted(() => {
+    getHasSkuList()
+  })
+
+  const getHasSkuList = async (pager = 1) => {
+    comRequest.pageNo = pager
+    let result = await requestSkuList(comRequest)
+    if (result.code == 200) {
+      total.value = result.data.total
+      skuAttr.value = result.data.records
+    }
+  }
+
+  const sizeChange = async (size: number) => {
+    comRequest.pageSize = size
+    let result = await requestSkuList(comRequest)
+    if (result.code == 200) {
+      total.value = result.data.total
+      skuAttr.value = result.data.records
+    }
+  }
+
+  let drawer = ref<boolean>(false)
+
+  let findSku = async (row: SkuData) => {
+    drawer.value = true
+    let result = await requestSkuInfo(row.id as number)
+    skuInfo.value = result.data
+  }
+
+  let removeSku = async (id: number) => {
+    let result: any = await requestDeleteSku(id)
     if (result.code == 200) {
       ElMessage({
         type: 'success',
-        message: '下架成功'
+        message: '删除成功'
       })
-      row.isSale = 0
-    }
-  } else {
-    let result = await requestSaleSku(row.id as number, 1)
-    if (result.code == 200) {
+
+      getHasSkuList(skuAttr.value.length > 1 ? comRequest.pageNo : comRequest.pageNo - 1)
+    } else {
       ElMessage({
-        type: 'success',
-        message: '上架成功'
+        type: 'error',
+        message: 'sku删除失败'
       })
-      row.isSale = 1
     }
   }
-}
-
-onMounted(() => {
-  getHasSkuList()
-})
-
-const getHasSkuList = async (pager = 1) => {
-  comRequest.pageNo = pager
-  let result = await requestSkuList(comRequest)
-  if (result.code == 200) {
-    total.value = result.data.total
-    skuAttr.value = result.data.records
-  }
-}
-
-const sizeChange = async (size: number) => {
-  comRequest.pageSize = size
-  let result = await requestSkuList(comRequest)
-  if (result.code == 200) {
-    total.value = result.data.total
-    skuAttr.value = result.data.records
-  }
-}
-
-let drawer = ref<boolean>(false)
-
-let findSku = async (row: SkuData) => {
-  drawer.value = true
-  let result = await requestSkuInfo(row.id as number)
-  skuInfo.value = result.data
-}
-
-let removeSku = async (id: number) => {
-  let result: any = await requestDeleteSku(id)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
-    })
-
-    getHasSkuList(skuAttr.value.length > 1 ? comRequest.pageNo : comRequest.pageNo - 1)
-  } else {
-    ElMessage({
-      type: 'error',
-      message: 'sku删除失败'
-    })
-  }
-}
 </script>
 
 <template>

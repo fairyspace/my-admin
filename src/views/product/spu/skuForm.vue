@@ -1,113 +1,113 @@
 <script setup lang="ts">
-import { SpuInfo } from '@/api/product/spu/type.ts'
-import { ref, reactive } from 'vue'
-import { requestAttrInfoList } from '@/api/product/attr'
-import { RequestAddSku, RequestImageList, RequestSaleAttrList } from '@/api/product/spu'
-import type { SkuData } from '@/api/product/spu/type.ts'
-import { ElMessage } from 'element-plus'
+  import { SpuInfo } from '@/api/product/spu/type.ts'
+  import { ref, reactive } from 'vue'
+  import { requestAttrInfoList } from '@/api/product/attr'
+  import { RequestAddSku, RequestImageList, RequestSaleAttrList } from '@/api/product/spu'
+  import type { SkuData } from '@/api/product/spu/type.ts'
+  import { ElMessage } from 'element-plus'
 
-let $emit = defineEmits(['changeScene'])
+  let $emit = defineEmits(['changeScene'])
 
-let tableVc = ref<any>()
+  let tableVc = ref<any>()
 
-let attrAttr = ref<any>([])
-let saleAttr = ref<any>([])
-let ImageAttr = ref<any>([])
+  let attrAttr = ref<any>([])
+  let saleAttr = ref<any>([])
+  let ImageAttr = ref<any>([])
 
-let skuParams = reactive<SkuData>({
-  categoryId: '',
-  spuId: '',
-  tmId: '',
-  skuName: '',
-  price: '',
-  weight: '',
-  skuDesc: '',
-  skuAttrValueList: [
-    {
-      attrId: '',
-      valueId: ''
-    }
-  ],
-  skuSaleAttrValueList: [
-    {
-      saleAttrId: '',
-      saleAttrValueId: ''
-    }
-  ],
-  skuDefaultImg: ''
-})
-
-let initSkuData = async (c1Id: number | string, c2Id: number | string, spu: SpuInfo) => {
-  skuParams.categoryId = spu.category3Id
-  skuParams.spuId = spu.id as number
-  skuParams.tmId = spu.tmId
-
-  //平台属性
-  let resultAttr: any = await requestAttrInfoList({ categoryId: spu.category3Id })
-  //销售属性
-  let resultSale: any = await RequestSaleAttrList(spu.id as number)
-  //图片属性
-  let resultImage: any = await RequestImageList(spu.id as number)
-
-  attrAttr.value = resultAttr.data
-  saleAttr.value = resultSale.data
-  ImageAttr.value = resultImage.data
-}
-
-let cancel = () => {
-  $emit('changeScene', { flag: 0, params: '' })
-}
-
-let handler = (row: any) => {
-  ImageAttr.value.forEach((item:any) => {
-    tableVc.value.toggleRowSelection(item, false)
+  let skuParams = reactive<SkuData>({
+    categoryId: '',
+    spuId: '',
+    tmId: '',
+    skuName: '',
+    price: '',
+    weight: '',
+    skuDesc: '',
+    skuAttrValueList: [
+      {
+        attrId: '',
+        valueId: ''
+      }
+    ],
+    skuSaleAttrValueList: [
+      {
+        saleAttrId: '',
+        saleAttrValueId: ''
+      }
+    ],
+    skuDefaultImg: ''
   })
-  tableVc.value.toggleRowSelection(row, true)
-  skuParams.skuDefaultImg = row.imgUrl
-}
 
-let save = async () => {
-  skuParams.skuAttrValueList = attrAttr.value.reduce((prev: any, next: any) => {
-    if (next.attrIdAndValueId) {
-      let [attrId, valueId] = next.attrIdAndValueId.split(':')
-      prev.push({
-        attrId,
-        valueId
-      })
-    }
-    return prev
-  }, [])
+  let initSkuData = async (c1Id: number | string, c2Id: number | string, spu: SpuInfo) => {
+    skuParams.categoryId = spu.category3Id
+    skuParams.spuId = spu.id as number
+    skuParams.tmId = spu.tmId
 
-  skuParams.skuSaleAttrValueList = saleAttr.value.reduce((prev: any, next: any) => {
-    if (next.saleIdAndValueId) {
-      let [saleAttrId, saleAttrValueId] = next.saleIdAndValueId.split(':')
-      prev.push({
-        saleAttrId,
-        saleAttrValueId
-      })
-    }
-    return prev
-  }, [])
+    //平台属性
+    let resultAttr: any = await requestAttrInfoList({ categoryId: spu.category3Id })
+    //销售属性
+    let resultSale: any = await RequestSaleAttrList(spu.id as number)
+    //图片属性
+    let resultImage: any = await RequestImageList(spu.id as number)
 
-  let result: any = await RequestAddSku(skuParams)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: '添加SKU成功'
-    })
-    //通知父组件切换
-    $emit('changeScene', { flag: 0, params: '' })
-  } else {
-    ElMessage({
-      type: 'error',
-      message: '添加失败'
-    })
+    attrAttr.value = resultAttr.data
+    saleAttr.value = resultSale.data
+    ImageAttr.value = resultImage.data
   }
-}
 
-defineExpose({
-  initSkuData
-})
+  let cancel = () => {
+    $emit('changeScene', { flag: 0, params: '' })
+  }
+
+  let handler = (row: any) => {
+    ImageAttr.value.forEach((item: any) => {
+      tableVc.value.toggleRowSelection(item, false)
+    })
+    tableVc.value.toggleRowSelection(row, true)
+    skuParams.skuDefaultImg = row.imgUrl
+  }
+
+  let save = async () => {
+    skuParams.skuAttrValueList = attrAttr.value.reduce((prev: any, next: any) => {
+      if (next.attrIdAndValueId) {
+        let [attrId, valueId] = next.attrIdAndValueId.split(':')
+        prev.push({
+          attrId,
+          valueId
+        })
+      }
+      return prev
+    }, [])
+
+    skuParams.skuSaleAttrValueList = saleAttr.value.reduce((prev: any, next: any) => {
+      if (next.saleIdAndValueId) {
+        let [saleAttrId, saleAttrValueId] = next.saleIdAndValueId.split(':')
+        prev.push({
+          saleAttrId,
+          saleAttrValueId
+        })
+      }
+      return prev
+    }, [])
+
+    let result: any = await RequestAddSku(skuParams)
+    if (result.code == 200) {
+      ElMessage({
+        type: 'success',
+        message: '添加SKU成功'
+      })
+      //通知父组件切换
+      $emit('changeScene', { flag: 0, params: '' })
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '添加失败'
+      })
+    }
+  }
+
+  defineExpose({
+    initSkuData
+  })
 </script>
 <template>
   <el-form label-width="7em">

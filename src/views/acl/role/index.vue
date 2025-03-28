@@ -1,170 +1,170 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref, nextTick } from 'vue'
-import {
-  MenuList,
-  MenuResponseData,
-  Records,
-  RequestData,
-  RoleData,
-  RoleResponseData
-} from '@/api/acl/role/type.ts'
-import {
-  requestAddOrUpdateRole,
-  requestAllPermissions,
-  requestAllRole,
-  requestDeleteRole,
-  requestSetPermission
-} from '@/api/acl/role'
-import useLayoutSettingStore from '@/store/modules/setting.ts'
+  import { onMounted, reactive, ref, nextTick } from 'vue'
+  import {
+    MenuList,
+    MenuResponseData,
+    Records,
+    RequestData,
+    RoleData,
+    RoleResponseData
+  } from '@/api/acl/role/type.ts'
+  import {
+    requestAddOrUpdateRole,
+    requestAllPermissions,
+    requestAllRole,
+    requestDeleteRole,
+    requestSetPermission
+  } from '@/api/acl/role'
+  import useLayoutSettingStore from '@/store/modules/setting.ts'
 
-import { ElMessage } from 'element-plus'
+  import { ElMessage } from 'element-plus'
 
-let roleRequest: RequestData = reactive({
-  pageNo: 1,
-  pageSize: 10,
-  roleName: ''
-})
-
-let allRole = ref<Records>([])
-let total = ref<number>(0)
-
-let dialog = ref<boolean>(false)
-
-onMounted(() => {
-  getHasRoleList()
-})
-const getHasRoleList = async (pager = 1) => {
-  roleRequest.pageNo = pager || 1
-  let result: RoleResponseData = await requestAllRole(roleRequest)
-  if (result.code == 200) {
-    allRole.value = result.data.records
-    roleRequest.pageNo = result.data.current
-    roleRequest.pageSize = result.data.size
-    total.value = result.data.total
-  }
-}
-
-let sizeChange = () => {
-  getHasRoleList()
-}
-
-let search = () => {
-  getHasRoleList()
-}
-
-let layoutSettingStore = useLayoutSettingStore()
-let reset = () => {
-  layoutSettingStore.refresh = !layoutSettingStore.refresh
-}
-
-let updateRole = async (row: RoleData) => {
-  dialog.value = true
-  Object.assign(roleParams, row)
-}
-
-let roleParams = reactive<RoleData>({
-  roleName: ''
-})
-
-let validateRoleName = (rule: any, value: any, callback: any) => {
-  if (value.trim().length >= 2) {
-    callback()
-  } else {
-    callback(new Error('职位名称至少2位'))
-  }
-}
-let rules = {
-  roleName: [{ required: true, trigger: 'blur', validator: validateRoleName }]
-}
-
-let roleForm = ref<any>()
-let save = async () => {
-  await roleForm.value.validate()
-  //添加或者更新职位
-  let result = await requestAddOrUpdateRole(roleParams)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: roleParams.id ? '更新成功' : '添加成功'
-    })
-    dialog.value = false
-    getHasRoleList(roleParams.id ? roleRequest.pageNo : 1)
-  }
-}
-
-let addRole = () => {
-  dialog.value = true
-  Object.assign(roleParams, { roleName: '' })
-  nextTick(() => {
-    roleForm.value.clearValidate()
-  })
-}
-
-let drawer = ref<boolean>(false)
-let tree = ref<any>()
-let menuAttr = ref<MenuList>([])
-let selectAttr = ref<number[]>([])
-let setPermission = async (row: RoleData) => {
-  drawer.value = true
-  Object.assign(roleParams, row)
-  let result: MenuResponseData = await requestAllPermissions(roleParams.id as number)
-
-  if (result.code == 200) {
-    menuAttr.value = result.data
-    selectAttr.value = filterSelectAttr(menuAttr.value, [])
-  }
-}
-
-const defaultProps = {
-  children: 'children',
-  label: 'name'
-}
-
-const filterSelectAttr = (allData: MenuList, initAttr: any) => {
-  allData.forEach((item) => {
-    if (item.select && item.level == 4) {
-      initAttr.push(item.id)
-    }
-
-    if (item.children && item.children.length > 0) {
-      filterSelectAttr(item.children, initAttr)
-    }
+  let roleRequest: RequestData = reactive({
+    pageNo: 1,
+    pageSize: 10,
+    roleName: ''
   })
 
-  return initAttr
-}
+  let allRole = ref<Records>([])
+  let total = ref<number>(0)
 
-const handler = async () => {
-  let roleId = roleParams.id
-  let arr = tree.value.getCheckedKeys()
-  let halfAttr = tree.value.getHalfCheckedKeys()
-  let permissionIds = arr.concat(halfAttr)
-  let permissions = {
-    roleId: roleId as number,
-    permissionIds: permissionIds
-  }
-  let result = await requestSetPermission(permissions)
-  if (result.code == 200) {
-    drawer.value = false
-    ElMessage({
-      type: 'success',
-      message: '分配权限成功'
-    })
-    //自己修改自己需要刷新自己权限
-    window.location.reload()
-  }
-}
+  let dialog = ref<boolean>(false)
 
-let removeRole = async (id: number) => {
-  let result = await requestDeleteRole(id)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
-    })
-    getHasRoleList(allRole.value.length > 1 ? roleRequest.pageNo : roleRequest.pageNo - 1)
+  onMounted(() => {
+    getHasRoleList()
+  })
+  const getHasRoleList = async (pager = 1) => {
+    roleRequest.pageNo = pager || 1
+    let result: RoleResponseData = await requestAllRole(roleRequest)
+    if (result.code == 200) {
+      allRole.value = result.data.records
+      roleRequest.pageNo = result.data.current
+      roleRequest.pageSize = result.data.size
+      total.value = result.data.total
+    }
   }
-}
+
+  let sizeChange = () => {
+    getHasRoleList()
+  }
+
+  let search = () => {
+    getHasRoleList()
+  }
+
+  let layoutSettingStore = useLayoutSettingStore()
+  let reset = () => {
+    layoutSettingStore.refresh = !layoutSettingStore.refresh
+  }
+
+  let updateRole = async (row: RoleData) => {
+    dialog.value = true
+    Object.assign(roleParams, row)
+  }
+
+  let roleParams = reactive<RoleData>({
+    roleName: ''
+  })
+
+  let validateRoleName = (rule: any, value: any, callback: any) => {
+    if (value.trim().length >= 2) {
+      callback()
+    } else {
+      callback(new Error('职位名称至少2位'))
+    }
+  }
+  let rules = {
+    roleName: [{ required: true, trigger: 'blur', validator: validateRoleName }]
+  }
+
+  let roleForm = ref<any>()
+  let save = async () => {
+    await roleForm.value.validate()
+    //添加或者更新职位
+    let result = await requestAddOrUpdateRole(roleParams)
+    if (result.code == 200) {
+      ElMessage({
+        type: 'success',
+        message: roleParams.id ? '更新成功' : '添加成功'
+      })
+      dialog.value = false
+      getHasRoleList(roleParams.id ? roleRequest.pageNo : 1)
+    }
+  }
+
+  let addRole = () => {
+    dialog.value = true
+    Object.assign(roleParams, { roleName: '' })
+    nextTick(() => {
+      roleForm.value.clearValidate()
+    })
+  }
+
+  let drawer = ref<boolean>(false)
+  let tree = ref<any>()
+  let menuAttr = ref<MenuList>([])
+  let selectAttr = ref<number[]>([])
+  let setPermission = async (row: RoleData) => {
+    drawer.value = true
+    Object.assign(roleParams, row)
+    let result: MenuResponseData = await requestAllPermissions(roleParams.id as number)
+
+    if (result.code == 200) {
+      menuAttr.value = result.data
+      selectAttr.value = filterSelectAttr(menuAttr.value, [])
+    }
+  }
+
+  const defaultProps = {
+    children: 'children',
+    label: 'name'
+  }
+
+  const filterSelectAttr = (allData: MenuList, initAttr: any) => {
+    allData.forEach((item) => {
+      if (item.select && item.level == 4) {
+        initAttr.push(item.id)
+      }
+
+      if (item.children && item.children.length > 0) {
+        filterSelectAttr(item.children, initAttr)
+      }
+    })
+
+    return initAttr
+  }
+
+  const handler = async () => {
+    let roleId = roleParams.id
+    let arr = tree.value.getCheckedKeys()
+    let halfAttr = tree.value.getHalfCheckedKeys()
+    let permissionIds = arr.concat(halfAttr)
+    let permissions = {
+      roleId: roleId as number,
+      permissionIds: permissionIds
+    }
+    let result = await requestSetPermission(permissions)
+    if (result.code == 200) {
+      drawer.value = false
+      ElMessage({
+        type: 'success',
+        message: '分配权限成功'
+      })
+      //自己修改自己需要刷新自己权限
+      window.location.reload()
+    }
+  }
+
+  let removeRole = async (id: number) => {
+    let result = await requestDeleteRole(id)
+    if (result.code == 200) {
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+      getHasRoleList(allRole.value.length > 1 ? roleRequest.pageNo : roleRequest.pageNo - 1)
+    }
+  }
 </script>
 
 <template>

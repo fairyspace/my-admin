@@ -1,43 +1,47 @@
 <script setup lang="ts">
-import * as echarts from 'echarts'
-import { onMounted, ref } from 'vue'
+  import * as echarts from 'echarts'
+  import { onMounted, ref } from 'vue'
 
-let charts = ref()
+  let charts = ref()
 
-onMounted(()=>{
-  let mycharts= echarts.init(charts.value)
+  onMounted(() => {
+    let mycharts = echarts.init(charts.value)
 
-  mycharts.setOption({
-    title:{
-      text:'游客消费统计',
-      textStyle:{
-        color:'white'
-      }
-    },
-    radar:{
-      indicator:[
-        {name:'Sales',max:1000},
-        {name:'Admin',max:1000},
-        {name:'Info',max:1000},
-        {name:'Custom',max:1000},
-        {name:'Develop',max:1000},
-        {name:'Market',max:1000},
+    mycharts.setOption({
+      title: {
+        text: '游客消费统计',
+        textStyle: {
+          color: 'white'
+        }
+      },
+      radar: {
+        indicator: [
+          { name: 'Sales', max: 1000 },
+          { name: 'Admin', max: 1000 },
+          { name: 'Info', max: 1000 },
+          { name: 'Custom', max: 1000 },
+          { name: 'Develop', max: 1000 },
+          { name: 'Market', max: 1000 }
+        ]
+      },
+      series: [
+        {
+          name: 'Budget',
+          type: 'radar',
+          data: [
+            {
+              value: [400, 500, 600, 800, 200, 100],
+              name: 'Allocated Budget'
+            },
+            {
+              value: [300, 344, 324, 678, 123, 230],
+              name: 'Actual Budget'
+            }
+          ]
+        }
       ]
-    },
-    series:[{
-      name:'Budget',
-      type:'radar',
-      data:[{
-        value:[400,500,600,800,200,100],
-        name:'Allocated Budget',
-      },{
-        value:[300,344,324,678,123,230],
-        name:'Actual Budget',
-      }]
-    }]
+    })
   })
-})
-
 </script>
 
 <template>

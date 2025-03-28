@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import router from '@/router'
+  import router from '@/router'
 
-const goHome = () => {
-  router.push('/')
-}
+  const goHome = () => {
+    router.push('/')
+  }
 </script>
 
 <template>
@@ -28,8 +28,17 @@ const goHome = () => {
 
       <button @click="goHome" class="home-button">
         <span>返回地球</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z" fill="currentColor"/>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z"
+            fill="currentColor"
+          />
         </svg>
       </button>
     </div>
@@ -65,17 +74,21 @@ const goHome = () => {
     width: 100%;
     height: 100%;
     background-image:
-      radial-gradient(10px 10px at 20px 30px, white, rgba(0,0,0,0)),
-      radial-gradient(10px 10px at 40px 70px, white, rgba(0,0,0,0)),
-      radial-gradient(10px 10px at 80px 40px, white, rgba(0,0,0,0)),
-      radial-gradient(10px 10px at 120px 80px, white, rgba(0,0,0,0));
+      radial-gradient(10px 10px at 20px 30px, white, rgba(0, 0, 0, 0)),
+      radial-gradient(10px 10px at 40px 70px, white, rgba(0, 0, 0, 0)),
+      radial-gradient(10px 10px at 80px 40px, white, rgba(0, 0, 0, 0)),
+      radial-gradient(10px 10px at 120px 80px, white, rgba(0, 0, 0, 0));
     background-size: 150px 150px;
     animation: twinkle 5s infinite alternate;
   }
 
   @keyframes twinkle {
-    0% { opacity: 0.5; }
-    100% { opacity: 1; }
+    0% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 
   /* 主要内容区域 */
@@ -151,7 +164,7 @@ const goHome = () => {
       border-radius: 50%;
       top: 0;
       left: 15px;
-      box-shadow: inset -10px -10px 0 rgba(0,0,0,0.1);
+      box-shadow: inset -10px -10px 0 rgba(0, 0, 0, 0.1);
     }
 
     .face {
@@ -194,18 +207,30 @@ const goHome = () => {
       border-radius: 40px;
       top: 90px;
       left: 35px;
-      box-shadow: inset -10px -10px 0 rgba(0,0,0,0.1);
+      box-shadow: inset -10px -10px 0 rgba(0, 0, 0, 0.1);
     }
   }
 
   /* 动画效果 */
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
   }
 
   @keyframes blink {
-    0%, 50%, 100% { transform: scaleY(1); }
-    25%, 75% { transform: scaleY(0.1); }
+    0%,
+    50%,
+    100% {
+      transform: scaleY(1);
+    }
+    25%,
+    75% {
+      transform: scaleY(0.1);
+    }
   }
 </style>

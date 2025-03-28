@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import setting from '@/setting.ts'
-import useLayoutSettingStore from '@/store/modules/setting.ts'
-let layoutSettingStore = useLayoutSettingStore()
+  import setting from '@/setting.ts'
+  import useLayoutSettingStore from '@/store/modules/setting.ts'
+  let layoutSettingStore = useLayoutSettingStore()
 </script>
 
 <template>

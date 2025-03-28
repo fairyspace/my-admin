@@ -14,8 +14,7 @@ export const requestSkuList = (data: RequestData) =>
 export const requestSaleSku = (skuId: number, state: number) =>
   request.get<any, any>(API.SAVE_URL + '&skuId=' + skuId + '&state=' + state)
 
-export const requestSkuInfo = (Id: number) =>
-  request.get<string, any>(API.INFO_URL + '&Id=' + Id)
+export const requestSkuInfo = (Id: number) => request.get<string, any>(API.INFO_URL + '&Id=' + Id)
 
 export const requestDeleteSku = (Id: number) =>
   request.delete<string, any>(API.DELETESKU_URL + '&Id=' + Id)

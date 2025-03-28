@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import useLayoutSettingStore from '@/store/modules/setting.ts'
-import { useRoute } from 'vue-router'
+  import useLayoutSettingStore from '@/store/modules/setting.ts'
+  import { useRoute } from 'vue-router'
 
-let layoutSettingStore = useLayoutSettingStore()
+  let layoutSettingStore = useLayoutSettingStore()
 
-let $route = useRoute()
+  let $route = useRoute()
 
-const changeIcon = () => {
-  layoutSettingStore.fold = !layoutSettingStore.fold
-}
+  const changeIcon = () => {
+    layoutSettingStore.fold = !layoutSettingStore.fold
+  }
 </script>
 
 <template>

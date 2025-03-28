@@ -22,7 +22,7 @@ export interface MenuResponseData extends ResponseData {
 }
 
 export interface MenuParams {
-  id?: number|string
+  id?: number | string
   code: string
   level: number
   name: string

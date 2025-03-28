@@ -88,107 +88,107 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch, onBeforeUnmount } from 'vue'
-import useCateGoryStore from '@/store/modules/category.ts'
-import { RequestRemoveSpu, RequestSkuInfo, RequestSpuInfoList } from '@/api/product/spu'
-import {
-  RequestInfoParams,
-  ResponseSpuInfo,
-  SkuData,
-  SkuInfoData,
-  SpuInfo
-} from '@/api/product/spu/type.ts'
-import SpuForm from '@/views/product/spu/spuForm.vue'
-import SkuForm from '@/views/product/spu/skuForm.vue'
-import { ElMessage } from 'element-plus'
+  import { reactive, ref, watch, onBeforeUnmount } from 'vue'
+  import useCateGoryStore from '@/store/modules/category.ts'
+  import { RequestRemoveSpu, RequestSkuInfo, RequestSpuInfoList } from '@/api/product/spu'
+  import {
+    RequestInfoParams,
+    ResponseSpuInfo,
+    SkuData,
+    SkuInfoData,
+    SpuInfo
+  } from '@/api/product/spu/type.ts'
+  import SpuForm from '@/views/product/spu/spuForm.vue'
+  import SkuForm from '@/views/product/spu/skuForm.vue'
+  import { ElMessage } from 'element-plus'
 
-let scene = ref<number>(0)
+  let scene = ref<number>(0)
 
-let records = ref<SpuInfo[]>([])
+  let records = ref<SpuInfo[]>([])
 
-let requestSpuListParams: RequestInfoParams = reactive({
-  pageNum: 1,
-  pageSize: 3,
-  category3Id: 1
-})
+  let requestSpuListParams: RequestInfoParams = reactive({
+    pageNum: 1,
+    pageSize: 3,
+    category3Id: 1
+  })
 
-let total = ref<number>(0)
-let spuVc = ref<any>()
-let skuVc = ref<any>()
+  let total = ref<number>(0)
+  let spuVc = ref<any>()
+  let skuVc = ref<any>()
 
-let skuArr = ref<SkuData[]>()
-let show = ref<boolean>(false)
+  let skuArr = ref<SkuData[]>()
+  let show = ref<boolean>(false)
 
-const findSku = async (row: SpuInfo) => {
-  let result: SkuInfoData = await RequestSkuInfo(row.id as number)
-  skuArr.value = result.data
-  show.value = true
-}
-
-let cateGoryStore = useCateGoryStore()
-
-watch(
-  () => cateGoryStore.attr3Id,
-  () => {
-    if (!cateGoryStore.attr3Id) return
-    getSpuList()
+  const findSku = async (row: SpuInfo) => {
+    let result: SkuInfoData = await RequestSkuInfo(row.id as number)
+    skuArr.value = result.data
+    show.value = true
   }
-)
 
-const getSpuList = async (pager = 1) => {
-  requestSpuListParams.pageNum = pager == 0 ? 1 : pager
-  let response: ResponseSpuInfo = await RequestSpuInfoList(requestSpuListParams)
-  if (response.code == 200) {
-    records.value = response.data.records
-    total.value = response.data.total
+  let cateGoryStore = useCateGoryStore()
+
+  watch(
+    () => cateGoryStore.attr3Id,
+    () => {
+      if (!cateGoryStore.attr3Id) return
+      getSpuList()
+    }
+  )
+
+  const getSpuList = async (pager = 1) => {
+    requestSpuListParams.pageNum = pager == 0 ? 1 : pager
+    let response: ResponseSpuInfo = await RequestSpuInfoList(requestSpuListParams)
+    if (response.code == 200) {
+      records.value = response.data.records
+      total.value = response.data.total
+    }
   }
-}
 
-const addSpu = () => {
-  scene.value = 1
-  spuVc.value.initAddSpuData(cateGoryStore.attr3Id)
-}
-
-const changeScene = (obj: any) => {
-  scene.value = obj.flag
-  if (obj.params == 'update') {
-    getSpuList(requestSpuListParams.pageNum)
-  } else {
-    getSpuList()
+  const addSpu = () => {
+    scene.value = 1
+    spuVc.value.initAddSpuData(cateGoryStore.attr3Id)
   }
-}
 
-const updateSpu = (row: SpuInfo) => {
-  scene.value = 1
-  spuVc.value.initSpuData(row)
-}
-
-let addSku = (row: SpuInfo) => {
-  scene.value = 2
-  skuVc.value.initSkuData(cateGoryStore.attr1Id, cateGoryStore.attr2Id, row)
-}
-
-let deleteSpu = async (row: SpuInfo) => {
-  let result = await RequestRemoveSpu(row.id as number)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
-    })
-
-    getSpuList(
-      records.value.length > 1 ? requestSpuListParams.pageNum : requestSpuListParams.pageNum - 1
-    )
-  } else {
-    ElMessage({
-      type: 'error',
-      message: '删除失败'
-    })
+  const changeScene = (obj: any) => {
+    scene.value = obj.flag
+    if (obj.params == 'update') {
+      getSpuList(requestSpuListParams.pageNum)
+    } else {
+      getSpuList()
+    }
   }
-}
 
-onBeforeUnmount(() => {
-  cateGoryStore.$reset()
-})
+  const updateSpu = (row: SpuInfo) => {
+    scene.value = 1
+    spuVc.value.initSpuData(row)
+  }
+
+  let addSku = (row: SpuInfo) => {
+    scene.value = 2
+    skuVc.value.initSkuData(cateGoryStore.attr1Id, cateGoryStore.attr2Id, row)
+  }
+
+  let deleteSpu = async (row: SpuInfo) => {
+    let result = await RequestRemoveSpu(row.id as number)
+    if (result.code == 200) {
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+
+      getSpuList(
+        records.value.length > 1 ? requestSpuListParams.pageNum : requestSpuListParams.pageNum - 1
+      )
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '删除失败'
+      })
+    }
+  }
+
+  onBeforeUnmount(() => {
+    cateGoryStore.$reset()
+  })
 </script>
 <style scoped lang="scss"></style>

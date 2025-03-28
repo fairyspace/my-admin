@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-defineProps(['menuList'])
-let $router = useRouter()
+  import { useRouter } from 'vue-router'
+  defineProps(['menuList'])
+  let $router = useRouter()
 
-let goRoute = (vc: any) => {
-  $router.push(vc.index)
-}
+  let goRoute = (vc: any) => {
+    $router.push(vc.index)
+  }
 </script>
 
 <script lang="ts">
-export default {
-  name: 'Menu'
-}
+  export default {
+    name: 'Menu'
+  }
 </script>
 
 <template>

@@ -1,74 +1,74 @@
 <script setup lang="ts">
-import { Lock, User } from '@element-plus/icons-vue'
-import { reactive, ref } from 'vue'
-import useUserStore from '@/store/modules/user.ts'
-import { useRouter, useRoute } from 'vue-router'
-import { ElNotification } from 'element-plus'
-import { getTime } from '@/utils/times.ts'
+  import { Lock, User } from '@element-plus/icons-vue'
+  import { reactive, ref } from 'vue'
+  import useUserStore from '@/store/modules/user.ts'
+  import { useRouter, useRoute } from 'vue-router'
+  import { ElNotification } from 'element-plus'
+  import { getTime } from '@/utils/times.ts'
 
-let loginForm = reactive({ username: '', password: '' })
-let userStore = useUserStore()
-let $router = useRouter()
-let $route = useRoute()
-let loading = ref(false)
+  let loginForm = reactive({ username: '', password: '' })
+  let userStore = useUserStore()
+  let $router = useRouter()
+  let $route = useRoute()
+  let loading = ref(false)
 
-let loginFormEntity = ref()
+  let loginFormEntity = ref()
 
-const login = async () => {
-  let result = await loginFormEntity.value.validate()
-  loading.value = true
-  try {
-    /*保证登陆成功，跳转到首页*/
-    await userStore.userLogin(loginForm)
-    let redirect = ($route.query.redirect as string) || '/'
-    await $router.push({ path: redirect })
-    ElNotification({
-      type: 'success',
-      message: '登陆成功',
-      title: `HI,${getTime()}好`
-    })
-  } catch (error) {
-    ElNotification({
-      type: 'error',
-      message: (error as Error).message
-    })
-  } finally {
-    loading.value = false
-  }
-}
-
-let validatorUserName = (rule: any, value: any, callback: any) => {
-  //value是表单元素文本内容
-  //calback符合条件就放行，不符合条件就注入error
-  if (value.length >= 5) {
-    callback()
-  } else {
-    callback(new Error('用户名长度至少为5位'))
-  }
-}
-let validatorPassword = (rule: any, value: any, callback: any) => {
-  if (value.length >= 5) {
-    callback()
-  } else {
-    callback(new Error('密码长度至少为5位'))
-  }
-}
-const rules = {
-  username: [
-    {
-      required: true,
-      trigger: 'change',
-      validator: validatorUserName
+  const login = async () => {
+    let result = await loginFormEntity.value.validate()
+    loading.value = true
+    try {
+      /*保证登陆成功，跳转到首页*/
+      await userStore.userLogin(loginForm)
+      let redirect = ($route.query.redirect as string) || '/'
+      await $router.push({ path: redirect })
+      ElNotification({
+        type: 'success',
+        message: '登陆成功',
+        title: `HI,${getTime()}好`
+      })
+    } catch (error) {
+      ElNotification({
+        type: 'error',
+        message: (error as Error).message
+      })
+    } finally {
+      loading.value = false
     }
-  ],
-  password: [
-    {
-      required: true,
-      trigger: 'change',
-      validator: validatorPassword
+  }
+
+  let validatorUserName = (rule: any, value: any, callback: any) => {
+    //value是表单元素文本内容
+    //calback符合条件就放行，不符合条件就注入error
+    if (value.length >= 5) {
+      callback()
+    } else {
+      callback(new Error('用户名长度至少为5位'))
     }
-  ]
-}
+  }
+  let validatorPassword = (rule: any, value: any, callback: any) => {
+    if (value.length >= 5) {
+      callback()
+    } else {
+      callback(new Error('密码长度至少为5位'))
+    }
+  }
+  const rules = {
+    username: [
+      {
+        required: true,
+        trigger: 'change',
+        validator: validatorUserName
+      }
+    ],
+    password: [
+      {
+        required: true,
+        trigger: 'change',
+        validator: validatorPassword
+      }
+    ]
+  }
 </script>
 
 <template>

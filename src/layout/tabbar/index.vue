@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Breadcrumb from './breadcrumb/index.vue'
-import Setting from './setting/index.vue'
+  import Breadcrumb from './breadcrumb/index.vue'
+  import Setting from './setting/index.vue'
 </script>
 
 <template>

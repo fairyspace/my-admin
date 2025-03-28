@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import useLayoutSettingStore from '@/store/modules/setting.ts'
-import { nextTick, ref, watch } from 'vue'
+  import useLayoutSettingStore from '@/store/modules/setting.ts'
+  import { nextTick, ref, watch } from 'vue'
 
-let LayoutSettingStore = useLayoutSettingStore()
-let flag = ref(true)
-/*监听变化，然后刷新页面*/
-watch(
-  () => LayoutSettingStore.refresh,
-  () => {
-    flag.value = false
-    /*保证销毁之后，DOM也更新完毕，再装载回来*/
-    nextTick(() => {
-      flag.value = true
-    })
-  }
-)
+  let LayoutSettingStore = useLayoutSettingStore()
+  let flag = ref(true)
+  /*监听变化，然后刷新页面*/
+  watch(
+    () => LayoutSettingStore.refresh,
+    () => {
+      flag.value = false
+      /*保证销毁之后，DOM也更新完毕，再装载回来*/
+      nextTick(() => {
+        flag.value = true
+      })
+    }
+  )
 </script>
 
 <template>

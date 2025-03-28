@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import Top from './components/top/index.vue'
-import Sex from './components/sex/index.vue'
-import Age from './components/age/index.vue'
-import Tourist from './components/tourist/index.vue'
-import Map from './components/map/index.vue'
-import Line from './components/line/index.vue'
-import Rank from './components/rank/index.vue'
-import Year from './components/year/index.vue'
-import Couter from './components/couter/index.vue'
+  import { ref, onMounted } from 'vue'
+  import Top from './components/top/index.vue'
+  import Sex from './components/sex/index.vue'
+  import Age from './components/age/index.vue'
+  import Tourist from './components/tourist/index.vue'
+  import Map from './components/map/index.vue'
+  import Line from './components/line/index.vue'
+  import Rank from './components/rank/index.vue'
+  import Year from './components/year/index.vue'
+  import Couter from './components/couter/index.vue'
 
-let screen = ref()
+  let screen = ref()
 
-onMounted(() => {
-  screen.value.style.transform = `scale(${getScale()}) translate(-50%,-50%)`
-})
+  onMounted(() => {
+    screen.value.style.transform = `scale(${getScale()}) translate(-50%,-50%)`
+  })
 
-//定义缩放比例
-function getScale(w = 1920, h = 1080) {
-  const ww = window.innerWidth / w
-  const wh = window.innerHeight / h
-  return ww < wh ? ww : wh
-  //ww<wh情况:1920/1920(ww) 1080/1080(wh)
-  //ww>wh情况:1920/1920(ww) 1080/1080(wh)
-}
+  //定义缩放比例
+  function getScale(w = 1920, h = 1080) {
+    const ww = window.innerWidth / w
+    const wh = window.innerHeight / h
+    return ww < wh ? ww : wh
+    //ww<wh情况:1920/1920(ww) 1080/1080(wh)
+    //ww>wh情况:1920/1920(ww) 1080/1080(wh)
+  }
 
-window.onresize = () => {
-  screen.value.style.transform = `scale(${getScale()}) translate(-50%,-50%)`
-}
+  window.onresize = () => {
+    screen.value.style.transform = `scale(${getScale()}) translate(-50%,-50%)`
+  }
 </script>
 
 <template>
@@ -85,16 +85,15 @@ window.onresize = () => {
           flex-direction: column;
           height: 1040px;
           margin-right: 20px;
-          .rank{
+          .rank {
             flex: 1.2;
           }
-          .year{
-            flex:1
+          .year {
+            flex: 1;
           }
-          .couter{
-            flex:1
+          .couter {
+            flex: 1;
           }
-
         }
         .left {
           flex: 1;
@@ -116,10 +115,10 @@ window.onresize = () => {
           flex: 2;
           display: flex;
           flex-direction: column;
-          .map{
-              flex: 2.8;
+          .map {
+            flex: 2.8;
           }
-          .line{
+          .line {
             flex: 1;
           }
         }

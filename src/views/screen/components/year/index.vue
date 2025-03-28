@@ -1,38 +1,36 @@
 <script setup lang="ts">
-import * as echarts from 'echarts'
-import { onMounted, ref } from 'vue'
+  import * as echarts from 'echarts'
+  import { onMounted, ref } from 'vue'
 
-let charts = ref()
+  let charts = ref()
 
-onMounted(() => {
-  let mycharts = echarts.init(charts.value)
-  mycharts.setOption({
-    xAxis: {
-      show: true,
-      type: 'category',
-    },
-    yAxis: {
-      show: false,
-    },
-    grid: {
-      letf: 10,
-      top: 0,
-      right: 10,
-      bottom: 20
-    },
-    series:
-        {
-          type: 'scatter',
-          data:[33,88,21,9,789,133,1312,123,7868,32,45,435],
-          label:{
-            show: true,
-            position: 'top',
-            color:'cyan'
-          }
+  onMounted(() => {
+    let mycharts = echarts.init(charts.value)
+    mycharts.setOption({
+      xAxis: {
+        show: true,
+        type: 'category'
+      },
+      yAxis: {
+        show: false
+      },
+      grid: {
+        letf: 10,
+        top: 0,
+        right: 10,
+        bottom: 20
+      },
+      series: {
+        type: 'scatter',
+        data: [33, 88, 21, 9, 789, 133, 1312, 123, 7868, 32, 45, 435],
+        label: {
+          show: true,
+          position: 'top',
+          color: 'cyan'
         }
-
+      }
+    })
   })
-})
 </script>
 
 <template>

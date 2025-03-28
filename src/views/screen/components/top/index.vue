@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import moment from 'moment'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-//路由驱动器
-let $router = useRouter()
+  import { useRouter } from 'vue-router'
+  import moment from 'moment'
+  import { ref, onMounted, onBeforeUnmount } from 'vue'
+  //路由驱动器
+  let $router = useRouter()
 
-let goHome = () => {
-  $router.push('/home')
-}
+  let goHome = () => {
+    $router.push('/home')
+  }
 
-let time = ref(moment().format('YYYY年MM月DD日 hh:mm:ss'))
-let timer = ref(0)
+  let time = ref(moment().format('YYYY年MM月DD日 hh:mm:ss'))
+  let timer = ref(0)
 
-onMounted(() => {
-  timer.value = setInterval(() => {
-    time.value = moment().format('YYYY年MM月DD日 hh:mm:ss')
-  }, 1000)
-})
-onBeforeUnmount(() => {
-  clearInterval(timer.value)
-})
+  onMounted(() => {
+    timer.value = setInterval(() => {
+      time.value = moment().format('YYYY年MM月DD日 hh:mm:ss')
+    }, 1000)
+  })
+  onBeforeUnmount(() => {
+    clearInterval(timer.value)
+  })
 </script>
 
 <template>

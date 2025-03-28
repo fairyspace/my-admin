@@ -68,7 +68,7 @@ export interface SaleAttrListResponseData extends responseData {
 }
 
 export interface SaleAttr {
-  id?: number,
+  id?: number
   name?: string
 }
 

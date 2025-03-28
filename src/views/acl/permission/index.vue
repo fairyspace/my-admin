@@ -1,73 +1,73 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
-import { requestAddOrUpdateMenu, requestAllMenu, requestDeleteMenu } from '@/api/acl/menu'
-import {
-  Menu,
-  MenuList,
-  MenuParams,
-  MenuResponseData,
-  ResponseData
-} from '@/api/acl/menu/type.ts'
-import { ElMessage } from 'element-plus'
+  import { onMounted, reactive, ref } from 'vue'
+  import { requestAddOrUpdateMenu, requestAllMenu, requestDeleteMenu } from '@/api/acl/menu'
+  import {
+    Menu,
+    MenuList,
+    MenuParams,
+    MenuResponseData,
+    ResponseData
+  } from '@/api/acl/menu/type.ts'
+  import { ElMessage } from 'element-plus'
 
-const menuArr = ref<MenuList>([])
+  const menuArr = ref<MenuList>([])
 
-const getHasRoleList = async () => {
-  let result: MenuResponseData = await requestAllMenu()
-  if (result.code == 200) {
-    menuArr.value = result.data
+  const getHasRoleList = async () => {
+    let result: MenuResponseData = await requestAllMenu()
+    if (result.code == 200) {
+      menuArr.value = result.data
+    }
   }
-}
 
-onMounted(() => {
-  getHasRoleList()
-})
-
-let dialog = ref<boolean>(false)
-let addMenu = (row: Menu) => {
-  dialog.value = true
-  menuParams.level = row.level + 1
-  menuParams.pid = row.id as number
-  menuParams.name = ''
-  menuParams.code = ''
-  menuParams.id = ''
-}
-
-let updateMenu = (row: Menu) => {
-  dialog.value = true
-  Object.assign(menuParams, row)
-}
-
-let save = async () => {
-  let result: ResponseData = await requestAddOrUpdateMenu(menuParams)
-  if (result.code == 200) {
-    dialog.value = false
-    ElMessage({
-      type: "success",
-      message: menuParams.id ? '修改成功' : '添加成功'
-    })
+  onMounted(() => {
     getHasRoleList()
+  })
+
+  let dialog = ref<boolean>(false)
+  let addMenu = (row: Menu) => {
+    dialog.value = true
+    menuParams.level = row.level + 1
+    menuParams.pid = row.id as number
+    menuParams.name = ''
+    menuParams.code = ''
+    menuParams.id = ''
   }
-}
 
-let menuParams = reactive<MenuParams>({
-  code: '',
-  level: 0,
-  name: '',
-  pid: 0
-})
-
-let removeMenu = async (id: number) => {
-  let result: ResponseData = await requestDeleteMenu(id)
-  if (result.code == 200) {
-    ElMessage({
-      type: 'success',
-      message: 'success'
-    })
-
-    getHasRoleList()
+  let updateMenu = (row: Menu) => {
+    dialog.value = true
+    Object.assign(menuParams, row)
   }
-}
+
+  let save = async () => {
+    let result: ResponseData = await requestAddOrUpdateMenu(menuParams)
+    if (result.code == 200) {
+      dialog.value = false
+      ElMessage({
+        type: 'success',
+        message: menuParams.id ? '修改成功' : '添加成功'
+      })
+      getHasRoleList()
+    }
+  }
+
+  let menuParams = reactive<MenuParams>({
+    code: '',
+    level: 0,
+    name: '',
+    pid: 0
+  })
+
+  let removeMenu = async (id: number) => {
+    let result: ResponseData = await requestDeleteMenu(id)
+    if (result.code == 200) {
+      ElMessage({
+        type: 'success',
+        message: 'success'
+      })
+
+      getHasRoleList()
+    }
+  }
 </script>
 
 <template>
