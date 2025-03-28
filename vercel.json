@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://mock.apipost.net/mock/336955316864000/api/$1"
+    }
+  ]
+}
